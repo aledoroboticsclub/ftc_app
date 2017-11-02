@@ -35,8 +35,8 @@ public class Strider
 		backRight=spareMap.dcMotor.get("back right wheel");
 		frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 		backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-		spinner1=spareMap.servo.get("spinner 1");
-		spinner2=spareMap.servo.get("spinner 2");
+		spinner1=spareMap.get(Servo.class, "spinner1");
+		spinner2=spareMap.get(Servo.class, "spinner2");
 	}
 
 	public void setToForward ()
