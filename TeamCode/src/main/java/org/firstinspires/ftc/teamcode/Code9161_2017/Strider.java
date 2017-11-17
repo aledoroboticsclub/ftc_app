@@ -97,8 +97,8 @@ public class Strider
 
 	public void runIntake ()
 	{
-		spinner1.setPosition(1);
-		spinner2.setPosition(0);
+		spinner1.setPosition(0);
+		spinner2.setPosition(1);
 	}
 
 	public void stopIntake ()
