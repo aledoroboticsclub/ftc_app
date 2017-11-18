@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 /**
  * Created by Aledo HS Robotics on 4/12/2017.
  */
-
+//What is up my dudes.
 public class Strider
 {
 
@@ -106,5 +106,4 @@ public class Strider
 		spinner1.setPosition(.5);
 		spinner2.setPosition(.5);
 	}
-
 }
