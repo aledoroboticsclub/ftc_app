@@ -21,8 +21,9 @@ public class Strider
 	DcMotor frontRight;
 	DcMotor backLeft;
 	DcMotor backRight;
-	Servo spinner1;
-	Servo spinner2;
+	//Servo spinner1;
+	//Servo spinner2;
+
 
 	private ElapsedTime runtime=new ElapsedTime();
 
@@ -35,40 +36,40 @@ public class Strider
 		backRight=spareMap.dcMotor.get("back right wheel");
 		frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 		backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-		spinner1=spareMap.get(Servo.class, "spinner1");
-		spinner2=spareMap.get(Servo.class, "spinner2");
+		//spinner1=spareMap.get(Servo.class, "spinner1");
+		//spinner2=spareMap.get(Servo.class, "spinner2");
 	}
 
-	public void setToForward ()
+	public void setToForward (double driveSpeed)
 	{
-		frontLeft.setPower(1);
-		frontRight.setPower(1);
-		backLeft.setPower(1);
-		backRight.setPower(1);
+		frontLeft.setPower(driveSpeed);
+		frontRight.setPower(driveSpeed);
+		backLeft.setPower(driveSpeed);
+		backRight.setPower(driveSpeed);
 	}
 
-	public void setToBackward ()
+	public void setToBackward (double driveSpeed)
 	{
-		frontLeft.setPower(-1);
-		frontRight.setPower(-1);
-		backLeft.setPower(-1);
-		backRight.setPower(-1);
+		frontLeft.setPower(-1*driveSpeed);
+		frontRight.setPower(-1*driveSpeed);
+		backLeft.setPower(-1*driveSpeed);
+		backRight.setPower(-1*driveSpeed);
 	}
 
-	public void setToClockwise ()
+	public void setToClockwise (double driveSpeed)
 	{
-		frontLeft.setPower(1);
-		frontRight.setPower(-1);
-		backLeft.setPower(1);
-		backRight.setPower(-1);
+		frontLeft.setPower(1*driveSpeed);
+		frontRight.setPower(-1*driveSpeed);
+		backLeft.setPower(1*driveSpeed);
+		backRight.setPower(-1*driveSpeed);
 	}
 
-	public void setToCounterclockwise ()
+	public void setToCounterwise (double driveSpeed)
 	{
-		frontLeft.setPower(-1);
-		frontRight.setPower(1);
-		backLeft.setPower(-1);
-		backRight.setPower(1);
+		frontLeft.setPower(-1*driveSpeed);
+		frontRight.setPower(1*driveSpeed);
+		backLeft.setPower(-1*driveSpeed);
+		backRight.setPower(1*driveSpeed);
 	}
 
 	public void setToStill ()
@@ -79,31 +80,31 @@ public class Strider
 		backRight.setPower(0);
 	}
 
-	public void setToLeft ()
+	public void setToLeft (double driveSpeed)
 	{
-		frontLeft.setPower(-1);
-		frontRight.setPower(1);
-		backLeft.setPower(1);
-		backRight.setPower(-1);
+		frontLeft.setPower(-1*driveSpeed);
+		frontRight.setPower(1*driveSpeed);
+		backLeft.setPower(1*driveSpeed);
+		backRight.setPower(-1*driveSpeed);
 	}
 
-	public void setToRight ()
+	public void setToRight (double driveSpeed)
 	{
-		frontLeft.setPower(1);
-		frontRight.setPower(-1);
-		backLeft.setPower(-1);
-		backRight.setPower(1);
+		frontLeft.setPower(1*driveSpeed);
+		frontRight.setPower(-1*driveSpeed);
+		backLeft.setPower(-1*driveSpeed);
+		backRight.setPower(1*driveSpeed);
 	}
 
-	public void runIntake ()
-	{
-		spinner1.setPosition(0);
-		spinner2.setPosition(1);
-	}
-
-	public void stopIntake ()
-	{
-		spinner1.setPosition(.5);
-		spinner2.setPosition(.5);
-	}
+//	public void runIntake ()
+//	{
+//		spinner1.setPosition(0);
+//		spinner2.setPosition(1);
+//	}
+//
+//	public void stopIntake ()
+//	{
+//		spinner1.setPosition(.5);
+//		spinner2.setPosition(.5);
+//	}
 }
