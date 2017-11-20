@@ -73,13 +73,19 @@ public class TeleopStrider extends OpMode
 			r.setToStill();
 		}
 
-//		if(gamepad1.a == true)
-//		{
-//			r.runIntake();
-//		}
-//		else if(gamepad1.a == false)
-//		{
-//			r.stopIntake();
-//		}
+		if(gamepad1.a == true)
+		{
+			r.startIntake();
+		}
+		else if(gamepad1.a == false)
+		{
+			r.stopIntake();
+		}
+
+		if(gamepad1.x)
+		{
+			r.startOutput();
+		}
+		else r.stopOutput();
 	}
 }
