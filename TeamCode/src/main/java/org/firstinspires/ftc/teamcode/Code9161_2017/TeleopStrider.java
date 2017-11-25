@@ -44,6 +44,10 @@ public class TeleopStrider extends OpMode
 		{
 			driveSpeed = .5;
 		}
+		if(gamepad1.left_bumper)
+		{
+			driveSpeed=.25;
+		}
 		if(gamepad1.left_stick_y>.25)
 		{
 			r.setToForward(driveSpeed);
@@ -77,15 +81,10 @@ public class TeleopStrider extends OpMode
 		{
 			r.startIntake();
 		}
-		else if(gamepad1.a == false)
+		else if(gamepad1.x == true)
 		{
-			r.stopIntake();
+			r.reverseIntake();
 		}
-
-		if(gamepad1.x)
-		{
-			r.startOutput();
-		}
-		else r.stopOutput();
+		else r.stopIntake();
 	}
 }

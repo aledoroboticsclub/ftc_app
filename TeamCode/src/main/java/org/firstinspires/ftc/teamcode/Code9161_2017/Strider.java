@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
@@ -22,9 +22,10 @@ public class Strider {
 	DcMotor backRight;
 	Servo input1;
 	Servo input2;
-	Servo output1;
-	Servo output2;
-
+	Servo input3;
+	Servo input4;
+	/*ColorSensor revColor;
+	ColorSensor MRColor;*/
 
 	private ElapsedTime runtime = new ElapsedTime();
 
@@ -38,80 +39,89 @@ public class Strider {
 		backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 		input1=spareMap.get(Servo.class, "input1");
 		input2=spareMap.get(Servo.class, "input2");
-		output1=spareMap.servo.get("output1");
-		output2=spareMap.servo.get("output2");
+		input3=spareMap.servo.get("output1");
+		input4=spareMap.servo.get("output2");
+		/*revColor=spareMap.colorSensor.get("REV Color Sensor");
+		MRColor=spareMap.colorSensor.get("MR Color Sensor");*/
 	}
 
-	public void setToForward(double driveSpeed) {
+	public void setToForward(double driveSpeed)
+	{
 		frontLeft.setPower(driveSpeed);
 		frontRight.setPower(driveSpeed);
 		backLeft.setPower(driveSpeed);
 		backRight.setPower(driveSpeed);
 	}
 
-	public void setToBackward(double driveSpeed) {
+	public void setToBackward(double driveSpeed)
+	{
 		frontLeft.setPower(-1 * driveSpeed);
 		frontRight.setPower(-1 * driveSpeed);
 		backLeft.setPower(-1 * driveSpeed);
 		backRight.setPower(-1 * driveSpeed);
 	}
 
-	public void setToClockwise(double driveSpeed) {
-		frontLeft.setPower(1 * driveSpeed);
-		frontRight.setPower(-1 * driveSpeed);
-		backLeft.setPower(1 * driveSpeed);
-		backRight.setPower(-1 * driveSpeed);
-	}
-
-	public void setToCounterwise(double driveSpeed) {
+	public void setToClockwise(double driveSpeed)
+	{
 		frontLeft.setPower(-1 * driveSpeed);
 		frontRight.setPower(1 * driveSpeed);
 		backLeft.setPower(-1 * driveSpeed);
 		backRight.setPower(1 * driveSpeed);
 	}
 
-	public void setToStill() {
+	public void setToCounterwise(double driveSpeed)
+	{
+		frontLeft.setPower(1 * driveSpeed);
+		frontRight.setPower(-1 * driveSpeed);
+		backLeft.setPower(1 * driveSpeed);
+		backRight.setPower(-1 * driveSpeed);
+	}
+
+	public void setToStill()
+	{
 		frontLeft.setPower(0);
 		frontRight.setPower(0);
 		backLeft.setPower(0);
 		backRight.setPower(0);
 	}
 
-	public void setToLeft(double driveSpeed) {
-		frontLeft.setPower(-1 * driveSpeed);
-		frontRight.setPower(1 * driveSpeed);
-		backLeft.setPower(1 * driveSpeed);
-		backRight.setPower(-1 * driveSpeed);
-	}
-
-	public void setToRight(double driveSpeed) {
+	public void setToLeft(double driveSpeed)
+	{
 		frontLeft.setPower(1 * driveSpeed);
 		frontRight.setPower(-1 * driveSpeed);
 		backLeft.setPower(-1 * driveSpeed);
 		backRight.setPower(1 * driveSpeed);
 	}
 
+	public void setToRight(double driveSpeed)
+	{
+		frontLeft.setPower(-1 * driveSpeed);
+		frontRight.setPower(1 * driveSpeed);
+		backLeft.setPower(1 * driveSpeed);
+		backRight.setPower(-1 * driveSpeed);
+	}
+
 	public void startIntake ()
 	{
 		input1.setPosition(0);
 		input2.setPosition(1);
+		input3.setPosition(0);
+		input4.setPosition(1);
+	}
+
+	public void reverseIntake()
+	{
+		input1.setPosition(1);
+		input2.setPosition(0);
+		input3.setPosition(1);
+		input4.setPosition(0);
 	}
 
 	public void stopIntake ()
 	{
 		input1.setPosition(.5);
 		input2.setPosition(.5);
-	}
-
-	public void startOutput()
-	{
-		output1.setPosition(0);
-		output2.setPosition(1);
-	}
-
-	public void stopOutput()
-	{
-		output1.setPosition(.5);
-		output2.setPosition(.5);
+		input3.setPosition(.5);
+		input4.setPosition(.5);
 	}
 }
