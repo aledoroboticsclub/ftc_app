@@ -39,51 +39,33 @@ public class TeleopStrider extends OpMode
 
 	public void loop()
 	{
-		double driveSpeed = 1;
+		//driving if chain
+		double power = 1;
 		if(gamepad1.right_bumper)
-		{
-			driveSpeed = .5;
-		}
+			power = .5;
 		if(gamepad1.left_bumper)
-		{
-			driveSpeed=.25;
-		}
+			power=.25;
 		if(gamepad1.left_stick_y>.25)
-		{
-			r.setToForward(driveSpeed);
-		}
+			r.setToForward(power);
 		else if(gamepad1.left_stick_y<-.25)
-		{
-			r.setToBackward(driveSpeed);
-		}
+			r.setToBackward(power);
 		else if(gamepad1.right_stick_x<-.25)
-		{
-			r.setToCounterwise(driveSpeed);
-		}
+			r.setToCounterwise(power);
 		else if(gamepad1.right_stick_x>.25)
-		{
-			r.setToClockwise(driveSpeed);
-		}
+			r.setToClockwise(power);
 		else if(gamepad1.left_stick_x>.25)
-		{
-			r.setToRight(driveSpeed);
-		}
+			r.setToRight(power);
 		else if(gamepad1.left_stick_x<-.25)
-		{
-			r.setToLeft(driveSpeed);
-		}
+			r.setToLeft(power);
 		else
-		{
 			r.setToStill();
-		}
 
-		if(gamepad1.a == true)
-		{
-			r.startIntake();
+		//intake servos
+		if(gamepad1.a == true) {
+			r.setToStartIntake();
 		}
-		else if(gamepad1.x == true)
-		{
-			r.reverseIntake();
+		else if(gamepad1.x == true) {
+			r.setToReverseIntake();
 		}
 		else r.stopIntake();
 	}
