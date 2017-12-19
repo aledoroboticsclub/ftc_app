@@ -3,12 +3,14 @@ package org.firstinspires.ftc.teamcode.Code9161_2017;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 
 /**
  * Created by Aledo HS Robotics on 4/12/2017.
@@ -19,18 +21,28 @@ public class Strider {
 	DcMotor frontRight;
 	DcMotor backLeft;
 	DcMotor backRight;
+	DcMotor lift1;
+	DcMotor lift2;
 
 	Servo input1;
 	Servo input2;
 	Servo input3;
 	Servo input4;
+	Servo trayServo;
 
 	ColorSensor revColor;
 	ColorSensor MRColor;
 
+	GyroSensor gyro;
+
 	Telemetry telemetry;
 
-	private static final int ticksPerInch=89;
+	private static final int ticksPerInch=89;//TODO: test this value, this one is from last year
+	private static final double initialTrayPosition=.667;
+	private static final double placementTrayPosition=.306;
+	private static final int encoderSafeZone=300;/*a motor must be within this many ticks of its
+	target to be considered "on target"*/
+	
 
 
 	private ElapsedTime runtime = new ElapsedTime();
@@ -43,45 +55,72 @@ public class Strider {
 		backRight = spareMap.dcMotor.get("back right wheel");
 		frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 		backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-		input1=spareMap.get(Servo.class, "input1");
-		input2=spareMap.get(Servo.class, "input2");
+		setDriveMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+		lift1=spareMap.dcMotor.get("lift1");
+		lift2=spareMap.dcMotor.get("lift2");
+		lift2.setDirection(DcMotorSimple.Direction.REVERSE);
+		lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+		input1=spareMap.servo.get("input1");
+		input2=spareMap.servo.get("input2");
 		input3=spareMap.servo.get("output1");
 		input4=spareMap.servo.get("output2");
-		revColor=spareMap.colorSensor.get("REV Color Sensor");
+		trayServo=spareMap.servo.get("trayServo");
+
+		/*revColor=spareMap.colorSensor.get("REV Color Sensor");
 		MRColor=spareMap.colorSensor.get("MR Color Sensor");
+		gyro=spareMap.gyroSensor.get("gyro");*/
+
+		setTrayToIntake();
 	}
 
-	public void setToStartIntake ()
-	{
+	public void setToStartIntake () {
 		input1.setPosition(0);
 		input2.setPosition(1);
 		input3.setPosition(0);
 		input4.setPosition(1);
 	}
-
-	public void setToReverseIntake()
-	{
+	public void setToReverseIntake() {
 		input1.setPosition(1);
 		input2.setPosition(0);
 		input3.setPosition(1);
 		input4.setPosition(0);
 	}
-
-	public void stopIntake ()
-	{
+	public void stopIntake () {
 		input1.setPosition(.5);
 		input2.setPosition(.5);
 		input3.setPosition(.5);
 		input4.setPosition(.5);
+	}
+
+	public void setTrayToIntake() {
+		trayServo.setPosition(initialTrayPosition);
+	}
+	public void setTrayToPlace() {
+		trayServo.setPosition(placementTrayPosition);
+	}
+
+	public void setLiftToUp(double power) {
+		lift1.setPower(power);
+		lift2.setPower(power);
+	}
+	public void setLiftToDown(double power) {
+		lift1.setPower(power*-1);
+		lift2.setPower(power*-1);
+	}
+	public void setLiftToStill() {
+		lift1.setPower(0);
+		lift2.setPower(0);
 	}
 	
 	//TODO: make one of these for every direction, or one that works for all for all direction
 	//TODO: implement acceleration and deceleration into this to prevent sliding
 	public void driveForwardDistance(double power, int distance)
 	{
-		setDriveMotorMode("RUN_TO_POSITION");
+		setDriveMotorMode(DcMotor.RunMode.RUN_TO_POSITION);
 		int frontLDist, frontRDist, backLDist, backRDist;
-		//89 is the ratio for ticks per inches
 		frontLeft.setTargetPosition(Math.round(distance*ticksPerInch)+frontLeft.getCurrentPosition());
 		frontRight.setTargetPosition(Math.round(distance*ticksPerInch)+frontRight.getCurrentPosition());
 		backLeft.setTargetPosition(Math.round(distance*ticksPerInch)+backLeft.getCurrentPosition());
@@ -100,40 +139,39 @@ public class Strider {
 			telemetry.addData("backRight distanceFrom: ",backRDist);
 			telemetry.update();
 		}while(
-					frontLDist>300 &&
-					frontRDist>300 &&
-					backLDist>300 &&
-					backRDist>300
+					frontLDist>encoderSafeZone &&
+					frontRDist>encoderSafeZone &&
+					backLDist>encoderSafeZone &&
+					backRDist>encoderSafeZone
 				);
 		setToStill();
 	}
 
-	public void setDriveMotorMode(String mode)
-	{
+	public void setDriveMotorMode(DcMotor.RunMode mode) {
 		switch(mode)
 		{
-			case "RUN_USING_ENCODER":
+			case RUN_USING_ENCODER:
 				if(frontLeft.getMode()==DcMotor.RunMode.RUN_USING_ENCODER)
 					break;
 				frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 				frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 				backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 				backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);break;
-			case "RUN_WITHOUT_ENCODER":
+			case RUN_WITHOUT_ENCODER:
 				if(frontLeft.getMode()==DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 					break;
 				frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 				frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 				backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 				backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);break;
-			case "STOP_AND_RESET_ENCODER":
+			case STOP_AND_RESET_ENCODER:
 				if(frontLeft.getMode()==DcMotor.RunMode.STOP_AND_RESET_ENCODER)
 					break;
 				frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 				frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 				backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 				backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);break;
-			case "RUN_TO_POSITION":
+			case RUN_TO_POSITION:
 				if(frontLeft.getMode()==DcMotor.RunMode.RUN_TO_POSITION)
 					break;
 				frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -143,8 +181,7 @@ public class Strider {
 		}
 	}
 
-	public void waiter(int time)
-	{
+	public void waiter(int time) {
 		runtime.reset();
 		while(runtime.milliseconds()<time){}
 	}
