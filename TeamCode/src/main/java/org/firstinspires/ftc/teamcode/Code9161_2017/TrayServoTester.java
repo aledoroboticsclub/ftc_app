@@ -32,12 +32,17 @@ public class TrayServoTester extends OpMode
 
 	DcMotor lift1;
 	DcMotor lift2;
+    int liftPosition=0;
 	public void init()
 	{
 		superServo=hardwareMap.servo.get("trayServo");
 		lift1=hardwareMap.dcMotor.get("lift1");
 		lift2=hardwareMap.dcMotor.get("lift2");
 		lift1.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	}
 
 	public void initLoop(){}
@@ -59,17 +64,16 @@ public class TrayServoTester extends OpMode
 
 		if(gamepad1.right_trigger>.25)
 		{
-			lift1.setPower(gamepad1.right_trigger);
-			lift2.setPower(gamepad1.right_trigger);
+			liftPosition+=10;
 		}
 		else if(gamepad1.left_trigger>.25)
 		{
-			lift1.setPower(gamepad1.left_trigger*-1);
-			lift2.setPower(gamepad1.left_trigger*-1);
+			liftPosition-=10;
 		}
-		else {
-			lift1.setPower(0);
-			lift2.setPower(0);
-		}
+		lift1.setTargetPosition(liftPosition);
+		lift2.setTargetPosition(liftPosition);
+		lift1.setPower(1);
+		lift2.setPower(1);
+        telemetry.addData("lift position", liftPosition);
 	}
 }

@@ -24,25 +24,31 @@ public class Strider {
 	DcMotor lift1;
 	DcMotor lift2;
 
-	Servo input1;
-	Servo input2;
-	Servo input3;
-	Servo input4;
+	DcMotor inputMR;
+	DcMotor inputML;
+	Servo inputSR;
+	Servo inputSL;
 	Servo trayServo;
 
-	ColorSensor revColor;
+	/*ColorSensor revColor;
 	ColorSensor MRColor;
 
-	GyroSensor gyro;
+	GyroSensor gyro;*/
 
 	Telemetry telemetry;
 
 	private static final int ticksPerInch=89;//TODO: test this value, this one is from last year
-	private static final double initialTrayPosition=.667;
-	private static final double placementTrayPosition=.306;
+	private static final double initialTrayPosition=.092;
+	private static final double placementTrayPosition=.578;
 	private static final int encoderSafeZone=300;/*a motor must be within this many ticks of its
 	target to be considered "on target"*/
-	
+	//in motor ticks
+	private static final int liftPosition0=0;//loading position
+	private static final int liftPosition1=0;//places on the ground
+	private static final int liftPosition2=0;//places over 1 cubes
+	private static final int liftPosition3=0;//places over 2 cubes
+	private static final int liftPosition4=0;//places over 3 cubes
+
 
 
 	private ElapsedTime runtime = new ElapsedTime();
@@ -55,44 +61,48 @@ public class Strider {
 		backRight = spareMap.dcMotor.get("back right wheel");
 		frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 		backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-		setDriveMotorMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+		setDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 		lift1=spareMap.dcMotor.get("lift1");
 		lift2=spareMap.dcMotor.get("lift2");
 		lift2.setDirection(DcMotorSimple.Direction.REVERSE);
-		lift1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-		lift2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-		input1=spareMap.servo.get("input1");
-		input2=spareMap.servo.get("input2");
-		input3=spareMap.servo.get("output1");
-		input4=spareMap.servo.get("output2");
+		inputML=spareMap.dcMotor.get("inputML");
+		inputMR=spareMap.dcMotor.get("inputMR");
+		inputML.setDirection(DcMotorSimple.Direction.REVERSE);
+		inputML.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+		inputMR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+		inputSL=spareMap.servo.get("inputSL");
+		inputSR=spareMap.servo.get("inputSR");
+
 		trayServo=spareMap.servo.get("trayServo");
 
 		/*revColor=spareMap.colorSensor.get("REV Color Sensor");
 		MRColor=spareMap.colorSensor.get("MR Color Sensor");
 		gyro=spareMap.gyroSensor.get("gyro");*/
 
-		setTrayToIntake();
+		//setTrayToIntake();
 	}
 
-	public void setToStartIntake () {
-		input1.setPosition(0);
-		input2.setPosition(1);
-		input3.setPosition(0);
-		input4.setPosition(1);
+	public void setToStartIntake (double power) {
+		inputML.setPower(power);
+		inputMR.setPower(power);
+		inputSL.setPosition(1);
+		inputSR.setPosition(0);
 	}
 	public void setToReverseIntake() {
-		input1.setPosition(1);
-		input2.setPosition(0);
-		input3.setPosition(1);
-		input4.setPosition(0);
+		inputML.setPower(-1);
+		inputMR.setPower(-1);
+		inputSL.setPosition(0);
+		inputSR.setPosition(1);
 	}
 	public void stopIntake () {
-		input1.setPosition(.5);
-		input2.setPosition(.5);
-		input3.setPosition(.5);
-		input4.setPosition(.5);
+		inputML.setPower(0);
+		inputMR.setPower(0);
+		inputSL.setPosition(.5);
+		inputSR.setPosition(.5);
 	}
 
 	public void setTrayToIntake() {
@@ -113,6 +123,37 @@ public class Strider {
 	public void setLiftToStill() {
 		lift1.setPower(0);
 		lift2.setPower(0);
+	}
+	
+	public void setLiftToPosition0() {
+		lift1.setTargetPosition(liftPosition0);
+		lift2.setTargetPosition(liftPosition0);
+		telemetry.addData("lift position: ", "0");
+		telemetry.addData("ready to load", "");
+	}
+	public void setLiftToPosition1() {
+		lift1.setTargetPosition(liftPosition1);
+		lift2.setTargetPosition(liftPosition1);
+		telemetry.addData("lift position: ", "1");
+		telemetry.addData("ready to place on ground", "");
+	}
+	public void setLiftToPosition2() {
+		lift1.setTargetPosition(liftPosition2);
+		lift2.setTargetPosition(liftPosition2);
+		telemetry.addData("lift position: ", "2");
+		telemetry.addData("ready to place over 1 cube", "");
+	}
+	public void setLiftToPosition3() {
+		lift1.setTargetPosition(liftPosition3);
+		lift2.setTargetPosition(liftPosition3);
+		telemetry.addData("lift position: ", "3");
+		telemetry.addData("ready to place over 2 cubes", "");
+	}
+	public void setLiftToPosition4() {
+		lift1.setTargetPosition(liftPosition4);
+		lift2.setTargetPosition(liftPosition4);
+		telemetry.addData("lift position: ", "4");
+		telemetry.addData("ready to place over 2 cubes", "");
 	}
 	
 	//TODO: make one of these for every direction, or one that works for all for all direction
@@ -221,13 +262,13 @@ public class Strider {
 
 	//setTo methods
 	//TODO: there may be a more eficient way to write these methods 
-	public void setToForward(double power) {
+	public void setToRight(double power) {
 		frontLeft.setPower(power);
 		frontRight.setPower(power);
 		backLeft.setPower(power);
 		backRight.setPower(power);
 	}
-	public void setToBackward(double power) {
+	public void setToLeft(double power) {
 		frontLeft.setPower(-1 * power);
 		frontRight.setPower(-1 * power);
 		backLeft.setPower(-1 * power);
@@ -245,13 +286,13 @@ public class Strider {
 		backLeft.setPower(1 * power);
 		backRight.setPower(-1 * power);
 	}
-	public void setToLeft(double power) {
+	public void setToForward(double power) {
 		frontLeft.setPower(1 * power);
 		frontRight.setPower(-1 * power);
 		backLeft.setPower(-1 * power);
 		backRight.setPower(1 * power);
 	}
-	public void setToRight(double power) {
+	public void setToBackward(double power) {
 		frontLeft.setPower(-1 * power);
 		frontRight.setPower(1 * power);
 		backLeft.setPower(1 * power);
