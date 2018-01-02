@@ -21,21 +21,29 @@ import com.qualcomm.robotcore.hardware.Servo;
  * 			cap ball container control with dpad, left for release, right for holding
  */
 
-@TeleOp(name="TrayServoTester", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="ServoTester", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled     //Determines if the program shows up on Driver Station
 
 
-public class TrayServoTester extends OpMode
+public class ServoTester extends OpMode
 {
-	Servo superServo;
-	double servoPosition=0;
+	Servo trayServo;
+	double trayPosition=.943;
+
+	Servo jewelPusher;
+	double jewelPosition=.29;
+
+	Servo relicServo;
+	double relicPosition=0;
 
 	DcMotor lift1;
 	DcMotor lift2;
     int liftPosition=0;
 	public void init()
 	{
-		superServo=hardwareMap.servo.get("trayServo");
+		trayServo=hardwareMap.servo.get("trayServo");
+		jewelPusher=hardwareMap.servo.get("jewelPusher");
+		relicServo=hardwareMap.servo.get("relicServo");
 		lift1=hardwareMap.dcMotor.get("lift1");
 		lift2=hardwareMap.dcMotor.get("lift2");
 		lift1.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -43,6 +51,8 @@ public class TrayServoTester extends OpMode
         lift2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		lift1.setPower(1);
+		lift2.setPower(1);
 	}
 
 	public void initLoop(){}
@@ -51,29 +61,33 @@ public class TrayServoTester extends OpMode
 
 	public void loop()
 	{
-		if (gamepad1.a)
-		{
-			servoPosition+=.001;
-		}
-		if(gamepad1.x)
-		{
-			servoPosition-=.001;
-		}
-		superServo.setPosition(servoPosition);
-		telemetry.addData("Servo Position", servoPosition);
+		trayPosition+=gamepad1.a?.01:0;
+		trayPosition-=gamepad1.y?.01:0;
+		trayPosition=trayPosition>1?1:trayPosition;
+		trayPosition=trayPosition<0?0:trayPosition;
+		trayServo.setPosition(trayPosition);
+		telemetry.addData("Tray Servo Position", trayPosition);
 
 		if(gamepad1.right_trigger>.25)
-		{
-			liftPosition+=10;
-		}
+			liftPosition+=20;
 		else if(gamepad1.left_trigger>.25)
-		{
-			liftPosition-=10;
-		}
+			liftPosition-=20;
 		lift1.setTargetPosition(liftPosition);
 		lift2.setTargetPosition(liftPosition);
-		lift1.setPower(1);
-		lift2.setPower(1);
         telemetry.addData("lift position", liftPosition);
+
+		jewelPosition+=gamepad1.b?.01:0;
+		jewelPosition-=gamepad1.x?.01:0;
+		jewelPosition=jewelPosition>1?1:jewelPosition;
+		jewelPosition=jewelPosition<0?0:jewelPosition;
+     	jewelPusher.setPosition(jewelPosition);
+		telemetry.addData("JewelPusher Servo Position", jewelPosition);
+
+		relicPosition+=gamepad1.dpad_down?.01:0;
+		relicPosition-=gamepad1.dpad_up?.01:0;
+		relicPosition=relicPosition>20?20:relicPosition;
+		relicPosition=relicPosition<-20?-20:relicPosition;
+		relicServo.setPosition(relicPosition);
+		telemetry.addData("relic Servo Position", relicPosition);
 	}
 }
