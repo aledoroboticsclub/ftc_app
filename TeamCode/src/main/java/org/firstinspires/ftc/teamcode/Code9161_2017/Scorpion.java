@@ -39,12 +39,13 @@ public class Scorpion {
 	DcMotor backRight;
 	DcMotor lift1;
 	DcMotor lift2;
-
 	DcMotor inputMR;
 	DcMotor inputML;
+
 	Servo trayServo;
-	Servo jewelPusher1;
-	Servo relic;
+	Servo jewelPusher;
+	Servo relicGrabber;
+	Servo extender;
 
 	ColorSensor MRColor;
 	GyroSensor gyroSensor;
@@ -58,14 +59,17 @@ public class Scorpion {
 	OpenGLMatrix lastLocation = null;
 	VuforiaLocalizer vuforia;
 
-	private ElapsedTime runtime = new ElapsedTime();
+	ElapsedTime timer = new ElapsedTime();
 
 	private static final double initialTrayPosition=.943;
-	private static final double placementTrayPosition=0.09;
 	private static final double parallelTrayPosistion=.7;
+	private static final double placementTrayPosition=0.09;
 
-	private static final double jewelPusherDownPosition=.69;
-	private static final double jewelPusherUpPosition=.15;
+	private static final double jewelPusherDownPosition=.92;
+	private static final double jewelPusherUpPosition=.29;
+
+	private static final double relicGrabberGrabbedPosition=0;
+	private static final double relicGrabberReleasePosition=0;
 
 	private static final int ticksPerInch=89;//TODO: test this value, this one is from last year
 	private static final int encoderSafeZone=300;/*a motor must be within this many ticks of its
@@ -109,11 +113,11 @@ public class Scorpion {
 		inputMR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 		trayServo=hardwareMap.servo.get("trayServo");
-		MRColor=hardwareMap.colorSensor.get("MR Color Sensor");
-
-		relic=hardwareMap.servo.get("relicServo");
+		relicGrabber=hardwareMap.servo.get("relicServo");
+		jewelPusher=hardwareMap.servo.get("jewelPusher");
+		extender=hardwareMap.servo.get("extender");
 		//gyro=hardwareMap.gyroSensor.get("gyro");
-
+		// MRColor=hardwareMap.colorSensor.get("MR Color Sensor");
 		//setTrayToIntake();
 	}
 
@@ -131,6 +135,19 @@ public class Scorpion {
 		trayServo.setPosition(placementTrayPosition);
 	}
 	public void setTrayToParallel() {trayServo.setPosition(parallelTrayPosistion);}
+
+	public void extenderOut(){
+		extender.setPosition(1);
+	}
+	public void extenderIn() {
+		extender.setPosition(0);
+	}
+	public void extenderStill(){
+		extender.setPosition(.5);
+	}
+
+	public void setGrabberToGrabbed(){relicGrabber.setPosition(relicGrabberGrabbedPosition);}
+	public void setGrabberToRelease(){relicGrabber.setPosition(relicGrabberReleasePosition);}
 
 	public void moveLiftDown(double power) {//power is a value 0 to 1
 		lift1.setTargetPosition(lift1.getCurrentPosition()+((int) Math.round(power * liftSpeedMultiplier)));
@@ -165,7 +182,6 @@ public class Scorpion {
 		telemetry.addData("lift position: ", "3");
 		telemetry.addData("ready to place over 3 cubes", "");
 	}
-
 
 	//TODO: implement acceleration and deceleration into this to prevent sliding
 	public void driveForwardEncoder(double power, int distance) {
@@ -377,13 +393,13 @@ public class Scorpion {
 		backRight.setPower(power);
 	}//for use with driveEncoder methods
 	public void waiter(int time) {
-		runtime.reset();
-		while(runtime.milliseconds()<time){}
+		timer.reset();
+		while(timer.milliseconds()<time){}
 	}
 
 	//jewel pusher method
 	public void pushJewel(String teamColor){
-		jewelPusher1.setPosition(jewelPusherDownPosition);
+		jewelPusher.setPosition(jewelPusherDownPosition);
 		waiter(500);
 		if(teamColor == "Blue"){
 			if(MRColor.blue()>MRColor.red()){
@@ -409,7 +425,7 @@ public class Scorpion {
 				turnAbsolute(20,1);
 			}
 		}
-		jewelPusher1.setPosition(jewelPusherUpPosition);
+		jewelPusher.setPosition(jewelPusherUpPosition);
 		waiter(500);
 	}
 
@@ -595,13 +611,5 @@ public class Scorpion {
 
 	String format(OpenGLMatrix transformationMatrix) {
 		return transformationMatrix.formatAsTransform();
-	}
-
-	//relic lift
-	public void relicPos1 (){
-		relic.setPosition(1);
-	}
-	public void relicPos2(){
-		relic.setPosition(0);
 	}
 }

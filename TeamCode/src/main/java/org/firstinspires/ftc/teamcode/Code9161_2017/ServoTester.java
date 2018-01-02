@@ -27,10 +27,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class ServoTester extends OpMode
 {
-	Servo superServo;
-	double servoPosition=0;
+	Servo trayServo;
+	double trayPosition=.943;
+
 	Servo jewelPusher;
-	double jewelPosition=0;
+	double jewelPosition=.29;
+
 	Servo relicServo;
 	double relicPosition=0;
 
@@ -39,7 +41,7 @@ public class ServoTester extends OpMode
     int liftPosition=0;
 	public void init()
 	{
-		superServo=hardwareMap.servo.get("trayServo");
+		trayServo=hardwareMap.servo.get("trayServo");
 		jewelPusher=hardwareMap.servo.get("jewelPusher");
 		relicServo=hardwareMap.servo.get("relicServo");
 		lift1=hardwareMap.dcMotor.get("lift1");
@@ -59,12 +61,12 @@ public class ServoTester extends OpMode
 
 	public void loop()
 	{
-		servoPosition+=gamepad1.a?.01:0;
-		servoPosition-=gamepad1.y?.01:0;
-		servoPosition=servoPosition>1?1:servoPosition;
-		servoPosition=servoPosition<0?0:servoPosition;
-		superServo.setPosition(servoPosition);
-		telemetry.addData("Tray Servo Position", servoPosition);
+		trayPosition+=gamepad1.a?.01:0;
+		trayPosition-=gamepad1.y?.01:0;
+		trayPosition=trayPosition>1?1:trayPosition;
+		trayPosition=trayPosition<0?0:trayPosition;
+		trayServo.setPosition(trayPosition);
+		telemetry.addData("Tray Servo Position", trayPosition);
 
 		if(gamepad1.right_trigger>.25)
 			liftPosition+=20;
@@ -72,18 +74,17 @@ public class ServoTester extends OpMode
 			liftPosition-=20;
 		lift1.setTargetPosition(liftPosition);
 		lift2.setTargetPosition(liftPosition);
-
         telemetry.addData("lift position", liftPosition);
 
-//		jewelPosition+=gamepad1.b?.01:0;
-//		jewelPosition-=gamepad1.x?.01:0;
-//		jewelPosition=jewelPosition>1?1:jewelPosition;
-//		jewelPosition=jewelPosition<0?0:jewelPosition;
-//		jewelPusher.setPosition(jewelPosition);
-//		telemetry.addData("JewelPusher Servo Position", jewelPosition);
+		jewelPosition+=gamepad1.b?.01:0;
+		jewelPosition-=gamepad1.x?.01:0;
+		jewelPosition=jewelPosition>1?1:jewelPosition;
+		jewelPosition=jewelPosition<0?0:jewelPosition;
+     	jewelPusher.setPosition(jewelPosition);
+		telemetry.addData("JewelPusher Servo Position", jewelPosition);
 
-		relicPosition+=gamepad1.b?.01:0;
-		relicPosition-=gamepad1.x?.01:0;
+		relicPosition+=gamepad1.dpad_down?.01:0;
+		relicPosition-=gamepad1.dpad_up?.01:0;
 		relicPosition=relicPosition>20?20:relicPosition;
 		relicPosition=relicPosition<-20?-20:relicPosition;
 		relicServo.setPosition(relicPosition);

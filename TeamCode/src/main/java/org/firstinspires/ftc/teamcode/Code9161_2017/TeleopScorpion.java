@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Code9161_2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="TeleopScorpion", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled     //Determines if the program shows up on Driver Station
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TeleopScorpion extends OpMode
 {
 	Scorpion r=new Scorpion();
+	ElapsedTime runtime=new ElapsedTime();
 	public void init()
 	{
 		r.initRobot(hardwareMap,telemetry);
@@ -20,7 +22,9 @@ public class TeleopScorpion extends OpMode
 
 	public void initLoop(){}
 
-	public void start(){}
+	public void start(){
+		runtime.reset();
+	}
 
 	boolean inReverse=false;//reverse button is a
 	boolean aWasPressed=false;
@@ -109,10 +113,19 @@ public class TeleopScorpion extends OpMode
 			r.setLiftToPosition3();//placing over 3 cubes
 
 		//relic
-		if (gamepad2.right_stick_y>.1)
-			r.relicPos1();
-		else if (gamepad2.right_stick_y<-.1)
-			r.relicPos2();
+		if (gamepad2.right_stick_x<-.75)
+			r.setGrabberToGrabbed();
+		else if (gamepad2.right_stick_x>.75)
+			r.setGrabberToRelease();
+
+		//extender
+		if(gamepad2.right_stick_y>.25)
+			r.extenderOut();
+		else if(gamepad2.right_stick_y<-.25)
+			r.extenderIn();
+		else
+			r.extenderStill();
+		telemetry.addData("Runtime: ", runtime.seconds());
 		telemetry.update();
 	}
 }
