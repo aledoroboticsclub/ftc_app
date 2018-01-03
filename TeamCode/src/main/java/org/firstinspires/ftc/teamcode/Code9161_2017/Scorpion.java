@@ -49,7 +49,7 @@ public class Scorpion {
 
 	ColorSensor MRColor;
 	GyroSensor gyroSensor;
-	ModernRoboticsI2cGyro Gyro;
+	ModernRoboticsI2cGyro gyro;
 	int zAccumulated;
 
 	Telemetry telemetry;
@@ -94,6 +94,7 @@ public class Scorpion {
 		backRight = hardwareMap.dcMotor.get("back right wheel");
 		frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 		backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+		setDriveMotorZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 		setDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 		lift1=hardwareMap.dcMotor.get("lift1");
@@ -116,9 +117,9 @@ public class Scorpion {
 		relicGrabber=hardwareMap.servo.get("relicServo");
 		jewelPusher=hardwareMap.servo.get("jewelPusher");
 		extender=hardwareMap.servo.get("extender");
-		//gyro=hardwareMap.gyroSensor.get("gyro");
-		// MRColor=hardwareMap.colorSensor.get("MR Color Sensor");
-		//setTrayToIntake();
+		/*gyro=hardwareMap.gyroSensor.get("gyro");
+		 MRColor=hardwareMap.colorSensor.get("MR Color Sensor");
+		setTrayToIntake();*/
 	}
 
 	public void rightIntake (double power) {
@@ -386,6 +387,24 @@ public class Scorpion {
 				backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);break;
 		}
 	}
+	public void setDriveMotorZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior) {
+		switch(behavior) {
+			case BRAKE:
+				if(frontLeft.getZeroPowerBehavior()==DcMotor.ZeroPowerBehavior.BRAKE)
+					break;
+				frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+				frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+				backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+				backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);break;
+			case FLOAT:
+				if(frontLeft.getZeroPowerBehavior()==DcMotor.ZeroPowerBehavior.FLOAT)
+					break;
+				frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+				frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+				backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+				backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);break;
+		}
+	}
 	public void setDriveMotorPower(double power){
 		frontLeft.setPower(power);
 		frontRight.setPower(power);
@@ -507,15 +526,16 @@ public class Scorpion {
 		backRight.setPower(0);
 	}
 
+	//TODO: must change so thay it can work in SET_TO_POSTITION mode, maybe one for both modes
 	public void turnAbsolute(int target, double power)
 	{
 		setDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-		zAccumulated = Gyro.getIntegratedZValue();  //Set variables to gyro readings
+		zAccumulated = gyro.getIntegratedZValue();  //Set variables to gyro readings
 
 		while (Math.abs(zAccumulated - target)  >0 )//Continue while the robot direction is further than three degrees from the target
 		{
-			telemetry.addData("heading: ",Gyro.getHeading());
-			telemetry.addData("integratedZValue: ",Gyro.getIntegratedZValue());
+			telemetry.addData("heading: ",gyro.getHeading());
+			telemetry.addData("integratedZValue: ",gyro.getIntegratedZValue());
 			telemetry.update();
 			if (zAccumulated > target)//if gyro is positive, turn counterwise
 			{
@@ -532,7 +552,7 @@ public class Scorpion {
 				backLeft.setPower(power);
 				backRight.setPower(-power);
 			}
-			zAccumulated = Gyro.getIntegratedZValue();  //Set variables to gyro readings
+			zAccumulated = gyro.getIntegratedZValue();  //Set variables to gyro readings
 			telemetry.addData("accu", String.format("%03d", zAccumulated));
 			telemetry.update();
 		}
@@ -608,7 +628,6 @@ public class Scorpion {
 			}
 			telemetry.update();
 		}
-
 	String format(OpenGLMatrix transformationMatrix) {
 		return transformationMatrix.formatAsTransform();
 	}
