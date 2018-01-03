@@ -13,8 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
-@Autonomous(name="AutonomousBlue1", group="Linear Opmode")
-public class AutonomousBlue1 extends LinearOpMode {
+@Autonomous(name="AutonomousBlue2", group="Linear Opmode")
+public class AutonomousBlue2 extends LinearOpMode {
     Scorpion r = new Scorpion();
     @Override
     public void runOpMode() {

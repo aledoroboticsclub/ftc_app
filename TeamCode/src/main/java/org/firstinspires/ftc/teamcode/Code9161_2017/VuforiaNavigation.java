@@ -53,13 +53,13 @@ public class VuforiaNavigation extends LinearOpMode {
         float mmBotWidth       = 18 * mmPerInch;
         float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;
 
-        OpenGLMatrix leftTargetLocationOnField = OpenGLMatrix
+        OpenGLMatrix redTargetLocationOnField = OpenGLMatrix
                 .translation(-mmFTCFieldWidth/2, 0, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.XZX,
                         AngleUnit.DEGREES, 90, 90, 0));
-        redTarget.setLocation(leftTargetLocationOnField);
-        RobotLog.ii(TAG, "Red Target=%s", format(leftTargetLocationOnField));
+        redTarget.setLocation(redTargetLocationOnField);
+        RobotLog.ii(TAG, "Red Target=%s", format(redTargetLocationOnField));
 
         OpenGLMatrix blueTargetLocationOnField = OpenGLMatrix
                 .translation(0, mmFTCFieldWidth/2, 0)

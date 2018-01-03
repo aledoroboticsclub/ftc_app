@@ -62,14 +62,14 @@ public class Scorpion {
 	ElapsedTime timer = new ElapsedTime();
 
 	private static final double initialTrayPosition=.943;
-	private static final double parallelTrayPosistion=.7;
-	private static final double placementTrayPosition=0.09;
+	private static final double parallelTrayPosistion=.52;
+	private static final double placementTrayPosition=0.06;
 
 	private static final double jewelPusherDownPosition=.92;
-	private static final double jewelPusherUpPosition=.29;
+	private static final double jewelPusherUpPosition=.19;
 
-	private static final double relicGrabberGrabbedPosition=0;
-	private static final double relicGrabberReleasePosition=0;
+	private static final double relicGrabberGrabbedPosition=.69;
+	private static final double relicGrabberReleasePosition=.4;
 
 	private static final int ticksPerInch=89;//TODO: test this value, this one is from last year
 	private static final int encoderSafeZone=300;/*a motor must be within this many ticks of its
@@ -94,7 +94,7 @@ public class Scorpion {
 		backRight = hardwareMap.dcMotor.get("back right wheel");
 		frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 		backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-		setDriveMotorZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+		setDriveMotorZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 		setDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 		lift1=hardwareMap.dcMotor.get("lift1");
@@ -422,26 +422,22 @@ public class Scorpion {
 		waiter(500);
 		if(teamColor == "Blue"){
 			if(MRColor.blue()>MRColor.red()){
-				turnAbsolute(20,1);
-				waiter(250);
-				turnAbsolute(-20,1);
+				turnClockwiseEncoder(1,3);
+				turnCounterwiseEncoder(1,3);
 			}
 			else{
-				turnAbsolute(-20,1);
-				waiter(250);
-				turnAbsolute(20,1);
+				turnCounterwiseEncoder(1,3);
+				turnClockwiseEncoder(1,3);
 			}
 		}
 		if(teamColor == "Red"){
 			if(MRColor.red()>MRColor.blue()){
-				turnAbsolute(20,1);
-				waiter(250);
-				turnAbsolute(-20,1);
+				turnClockwiseEncoder(1,3);
+				turnCounterwiseEncoder(1,3);
 			}
 			else{
-				turnAbsolute(-20,1);
-				waiter(250);
-				turnAbsolute(20,1);
+				turnCounterwiseEncoder(1,3);
+				turnClockwiseEncoder(1,3);
 			}
 		}
 		jewelPusher.setPosition(jewelPusherUpPosition);
@@ -526,7 +522,7 @@ public class Scorpion {
 		backRight.setPower(0);
 	}
 
-	//TODO: must change so thay it can work in SET_TO_POSTITION mode, maybe one for both modes
+	//TODO: must change so that it can work in SET_TO_POSTITION mode, maybe one for both modes
 	public void turnAbsolute(int target, double power)
 	{
 		setDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -559,76 +555,5 @@ public class Scorpion {
 		setToStill();
 	}
 
-	public void vuforia() {
 
-		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-		parameters.vuforiaLicenseKey = "Ac8Q0nb/////AAAAGZRBQQCid0gNt3ydtz8W8gB8MrlkYn+Gu+jvldH+Igx9SypXvRwUWJw/71iF8xhpjKXBDv1UDD+EsjkvvC1+Zko/hF+lZG/TglT50MCsw6/q2MuSc+AUFDqT9lhEJcyroMMp20VPNwj/fUoUAxr5DV4+VUdwwYW/sCML6iL/x0rWEzUGxJf8qvKSrZcI/4X2fWsryCaprTXecsZCTudHQiElph2GCtMva4843D9sx+a6NB9zhPiyn6aaydEs5T4Ygc5o2nK1p6o8G82++XtlDYPkBuVBajLsO6z0Zvk980xIWmgyKjMNZlLofM7lLJdjt5Sh4a1imlIlsAWbQqPvs35MxJLmmrugrO7WXXveK4TY";
-
-		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-		VuforiaTrackables relicVuMark = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-		VuforiaTrackable redTarget = relicVuMark.get(0);
-		redTarget.setName("Red Target");
-
-		VuforiaTrackable blueTarget  = relicVuMark.get(1);
-		blueTarget.setName("Blue Target");
-
-		List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-		allTrackables.addAll(relicVuMark);
-
-		float mmPerInch        = 25.4f;
-		float mmBotWidth       = 18 * mmPerInch;
-		float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;
-
-		OpenGLMatrix redTargetLocationOnField = OpenGLMatrix
-				.translation(-mmFTCFieldWidth/2, 0, 0)
-				.multiplied(Orientation.getRotationMatrix(
-						AxesReference.EXTRINSIC, AxesOrder.XZX,
-						AngleUnit.DEGREES, 90, 90, 0));
-		redTarget.setLocation(redTargetLocationOnField);
-		RobotLog.ii(TAG, "Red Target=%s", format(redTargetLocationOnField));
-
-		OpenGLMatrix blueTargetLocationOnField = OpenGLMatrix
-				.translation(0, mmFTCFieldWidth/2, 0)
-				.multiplied(Orientation.getRotationMatrix(
-						AxesReference.EXTRINSIC, AxesOrder.XZX,
-						AngleUnit.DEGREES, 90, 0, 0));
-		blueTarget.setLocation(blueTargetLocationOnField);
-		RobotLog.ii(TAG, "Blue Target=%s", format(blueTargetLocationOnField));
-
-		OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix
-				.translation(mmBotWidth/2,0,0)
-				.multiplied(Orientation.getRotationMatrix(
-						AxesReference.EXTRINSIC, AxesOrder.YZY,
-						AngleUnit.DEGREES, -90, 0, 0));
-		RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
-
-		((VuforiaTrackableDefaultListener)redTarget.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
-		((VuforiaTrackableDefaultListener)blueTarget.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
-
-		relicVuMark.activate();
-
-			for (VuforiaTrackable trackable : allTrackables) {
-				telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
-
-				OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
-				if (robotLocationTransform != null) {
-					lastLocation = robotLocationTransform;
-				}
-			}
-
-			if (lastLocation != null) {
-				RobotLog.vv(TAG, "robot=%s", format(lastLocation));
-				telemetry.addData("Pos", format(lastLocation));
-			} else {
-				telemetry.addData("Pos", "Unknown");
-			}
-			telemetry.update();
-		}
-	String format(OpenGLMatrix transformationMatrix) {
-		return transformationMatrix.formatAsTransform();
-	}
 }

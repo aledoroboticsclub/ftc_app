@@ -31,10 +31,10 @@ public class ServoTester extends OpMode
 	double trayPosition=.943;
 
 	Servo jewelPusher;
-	double jewelPosition=.29;
+	double jewelPosition=.19;
 
 	Servo relicServo;
-	double relicPosition=0;
+	double relicPosition=.69;
 
 	DcMotor lift1;
 	DcMotor lift2;
@@ -85,8 +85,8 @@ public class ServoTester extends OpMode
 
 		relicPosition+=gamepad1.dpad_down?.01:0;
 		relicPosition-=gamepad1.dpad_up?.01:0;
-		relicPosition=relicPosition>20?20:relicPosition;
-		relicPosition=relicPosition<-20?-20:relicPosition;
+		relicPosition=relicPosition>1?1:relicPosition;
+		relicPosition=relicPosition<-1?-1:relicPosition;
 		relicServo.setPosition(relicPosition);
 		telemetry.addData("relic Servo Position", relicPosition);
 	}

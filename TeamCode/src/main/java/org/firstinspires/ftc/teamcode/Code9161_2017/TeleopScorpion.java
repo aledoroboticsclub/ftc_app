@@ -117,6 +117,7 @@ public class TeleopScorpion extends OpMode
 			r.setGrabberToGrabbed();
 		else if (gamepad2.right_stick_x>.75)
 			r.setGrabberToRelease();
+		telemetry.addData("gamepad2.right_stick_x",gamepad2.right_stick_x);
 
 		//extender
 		if(gamepad2.right_stick_y>.25)
