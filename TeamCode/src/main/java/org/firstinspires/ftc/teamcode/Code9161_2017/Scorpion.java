@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
@@ -47,7 +48,7 @@ public class Scorpion {
 	Servo relicGrabber;
 	Servo extender;
 
-	ColorSensor MRColor;
+	//ColorSensor MRColor;
 	GyroSensor gyroSensor;
 	ModernRoboticsI2cGyro gyro;
 	int zAccumulated;
@@ -62,14 +63,14 @@ public class Scorpion {
 	ElapsedTime timer = new ElapsedTime();
 
 	private static final double initialTrayPosition=.943;
-	private static final double parallelTrayPosistion=.52;
+	private static final double parallelTrayPosistion=.673;
 	private static final double placementTrayPosition=0.06;
 
-	private static final double jewelPusherDownPosition=.92;
+	private static final double jewelPusherDownPosition=.81;
 	private static final double jewelPusherUpPosition=.19;
 
-	private static final double relicGrabberGrabbedPosition=.69;
-	private static final double relicGrabberReleasePosition=.4;
+	private static final double relicGrabberGrabbedPosition=.6;
+	private static final double relicGrabberReleasePosition=.45;
 
 	private static final int ticksPerInch=89;//TODO: test this value, this one is from last year
 	private static final int encoderSafeZone=300;/*a motor must be within this many ticks of its
@@ -117,9 +118,13 @@ public class Scorpion {
 		relicGrabber=hardwareMap.servo.get("relicServo");
 		jewelPusher=hardwareMap.servo.get("jewelPusher");
 		extender=hardwareMap.servo.get("extender");
-		/*gyro=hardwareMap.gyroSensor.get("gyro");
-		 MRColor=hardwareMap.colorSensor.get("MR Color Sensor");
-		setTrayToIntake();*/
+
+		setTrayToIntake();
+		jewelPusher.setPosition(jewelPusherUpPosition);
+		setGrabberToGrabbed();
+
+		/*MRColor=hardwareMap.colorSensor.get("MR Color Sensor");
+		MRColor.enableLed(true);*/
 	}
 
 	public void rightIntake (double power) {
@@ -417,32 +422,41 @@ public class Scorpion {
 	}
 
 	//jewel pusher method
-	public void pushJewel(String teamColor){
+	/*public void pushJewel(String teamColor){
 		jewelPusher.setPosition(jewelPusherDownPosition);
-		waiter(500);
-		if(teamColor == "Blue"){
+		MRColor.enableLed(false);
+		MRColor.enableLed(true);
+		waiter(1000);
+		if(teamColor.equals("Blue")){
 			if(MRColor.blue()>MRColor.red()){
+				telemetry.addData("Blue","");
 				turnClockwiseEncoder(1,3);
+				jewelPusher.setPosition(jewelPusherUpPosition);
 				turnCounterwiseEncoder(1,3);
 			}
 			else{
+				telemetry.addData("Red","");
 				turnCounterwiseEncoder(1,3);
+				jewelPusher.setPosition(jewelPusherUpPosition);
 				turnClockwiseEncoder(1,3);
 			}
 		}
 		if(teamColor == "Red"){
 			if(MRColor.red()>MRColor.blue()){
+				telemetry.addData("Red","");
 				turnClockwiseEncoder(1,3);
+				jewelPusher.setPosition(jewelPusherUpPosition);
 				turnCounterwiseEncoder(1,3);
 			}
 			else{
+				telemetry.addData("Blue","");
 				turnCounterwiseEncoder(1,3);
+				jewelPusher.setPosition(jewelPusherUpPosition);
 				turnClockwiseEncoder(1,3);
 			}
 		}
-		jewelPusher.setPosition(jewelPusherUpPosition);
 		waiter(500);
-	}
+	}*/
 
 	//driveTime methods
 	//TODO: consider implementing acceleration and deceleration into the driveTime methods, even though it may be more work than it is worth
@@ -523,8 +537,7 @@ public class Scorpion {
 	}
 
 	//TODO: must change so that it can work in SET_TO_POSTITION mode, maybe one for both modes
-	public void turnAbsolute(int target, double power)
-	{
+	public void turnAbsolute(int target, double power) {
 		setDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		zAccumulated = gyro.getIntegratedZValue();  //Set variables to gyro readings
 
@@ -554,6 +567,31 @@ public class Scorpion {
 		}
 		setToStill();
 	}
+	public int decodePictograph(){
+		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+		parameters.vuforiaLicenseKey = "Ac8Q0nb/////AAAAGZRBQQCid0gNt3ydtz8W8gB8MrlkYn+Gu+jvldH+Igx9SypXvRwUWJw/71iF8xhpjKXBDv1UDD+EsjkvvC1+Zko/hF+lZG/TglT50MCsw6/q2MuSc+AUFDqT9lhEJcyroMMp20VPNwj/fUoUAxr5DV4+VUdwwYW/sCML6iL/x0rWEzUGxJf8qvKSrZcI/4X2fWsryCaprTXecsZCTudHQiElph2GCtMva4843D9sx+a6NB9zhPiyn6aaydEs5T4Ygc5o2nK1p6o8G82++XtlDYPkBuVBajLsO6z0Zvk980xIWmgyKjMNZlLofM7lLJdjt5Sh4a1imlIlsAWbQqPvs35MxJLmmrugrO7WXXveK4TY";
 
+		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
+		VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+		VuforiaTrackable relicTemplate = relicTrackables.get(0);
+		relicTemplate.setName("relicVuMarkTemplate");
+		RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+		if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+			telemetry.addData("VuMark", "%s visible", vuMark);
+			if(vuMark == RelicRecoveryVuMark.LEFT)
+				return 0;
+			if(vuMark == RelicRecoveryVuMark.CENTER)
+				return 6;
+			if(vuMark == RelicRecoveryVuMark.RIGHT)
+				return 12;
+		}
+		else {
+			telemetry.addData("VuMark", "not visible");
+		}
+		telemetry.update();
+		return 0;
+	}
 }

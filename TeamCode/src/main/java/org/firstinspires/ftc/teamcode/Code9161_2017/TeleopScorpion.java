@@ -12,8 +12,7 @@ public class TeleopScorpion extends OpMode
 {
 	Scorpion r=new Scorpion();
 	ElapsedTime runtime=new ElapsedTime();
-	public void init()
-	{
+	public void init() {
 		r.initRobot(hardwareMap,telemetry);
 		telemetry.addData("init Complete","");
 
@@ -28,12 +27,11 @@ public class TeleopScorpion extends OpMode
 
 	boolean inReverse=false;//reverse button is a
 	boolean aWasPressed=false;
-	public void loop()
-	{
+	public void loop() {
+		//TODO: see if you can change the strafing to remain straight while strafing, maybe use a gyro
 		if(gamepad1.a && !aWasPressed)
 			inReverse=!inReverse;
 		aWasPressed=gamepad1.a;
-		//TODO: see if you can change the strafing to remain straight while strafing, maybe use a gyro
 		//driving if chain
 		double power=1;
 		if (gamepad1.right_bumper)
@@ -86,13 +84,13 @@ public class TeleopScorpion extends OpMode
 		if(gamepad2.right_trigger>.1)
 			r.rightIntake(gamepad2.right_trigger);
 		else if(gamepad2.right_bumper)
-			r.rightIntake(-.5);
+			r.rightIntake(gamepad1.b?-1:-.5);
 		else
 			r.rightIntake(0);
 		if (gamepad2.left_trigger>.1)
 			r.leftIntake(gamepad2.left_trigger);
 		else if(gamepad2.left_bumper)
-			r.leftIntake(-.5);
+			r.leftIntake(gamepad1.b?-1:-.5);
 		else
 			r.leftIntake(0);
 

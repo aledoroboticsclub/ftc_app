@@ -21,13 +21,13 @@ public class AutonomousBlue2 extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             r.driveLeftEncoder(1,6);
-            r.pushJewel("Blue");
-            r.driveRightEncoder(1,6);
-            r.driveForwardEncoder(1,12);
-            //r.vuforia();
+           // r.pushJewel("Blue");
+            r.driveBackwardEncoder(1,12);
             r.turnClockwiseEncoder(1,12);
+            r.driveForwardEncoder(1,18 + r.decodePictograph());
+            r.turnCounterwiseEncoder(1,12);
+            r.driveForwardEncoder(1,36);
             r.setLiftToPosition0();
-            r.driveRightEncoder(1,12);
         }
     }
 }

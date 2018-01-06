@@ -19,15 +19,14 @@ public class AutonomousBlue1 extends LinearOpMode {
     @Override
     public void runOpMode() {
         waitForStart();
-        while (opModeIsActive()) {
-            r.driveLeftEncoder(1,6);
-            r.pushJewel("Blue");
-            r.driveRightEncoder(1,6);
-            r.driveForwardEncoder(1,12);
-            //r.vuforia();
-            r.turnClockwiseEncoder(1,12);
-            r.setLiftToPosition0();
-            r.driveRightEncoder(1,12);
-        }
+        r.driveLeftEncoder(1,6);
+        //r.pushJewel("Blue");
+        r.driveBackwardEncoder(1,12);
+        r.turnCounterwiseEncoder(1,12);
+        int a = r.decodePictograph();
+        r.driveBackwardEncoder(1,18 + a);
+        r.turnClockwiseEncoder(1,12);
+        r.driveForwardEncoder(1,36);
+        r.setLiftToPosition0();
     }
 }
