@@ -13,19 +13,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 
-@Autonomous(name="AutonomousBlue2", group="Linear OpMode")
-public class AutonomousBlue2 extends LinearOpMode {
+@Autonomous(name="AutonomousRed2", group="Linear OpMode")
+public class AutonomousRed2 extends LinearOpMode {
     Scorpion r = new Scorpion();
     int a = 0;
     @Override
     public void runOpMode() {
         waitForStart();
         r.driveLeftEncoder(1,6);
-        r.pushJewel("Blue");
+        r.pushJewel("Red");
         r.driveBackwardEncoder(1,12);
-        r.turnClockwiseEncoder(1,12);
+        r.turnCounterwiseEncoder(1,12);
         a = r.decodePictograph();
-        r.driveRightEncoder(1,24 + a);
+        r.driveLeftEncoder(1,12 + a);
         r.setLiftToPosition0();
     }
 }

@@ -48,15 +48,14 @@ public class Scorpion {
 	Servo relicGrabber;
 	Servo extender;
 
-	//ColorSensor MRColor;
-	GyroSensor gyroSensor;
-	ModernRoboticsI2cGyro gyro;
-	int zAccumulated;
+	ColorSensor MRColor;
+
+
 
 	Telemetry telemetry;
 	HardwareMap hardwareMap;
 
-	public static final String TAG = "Vuforia Navigation";
+	public static final String TAG = "Vuforia VuMark";
 	OpenGLMatrix lastLocation = null;
 	VuforiaLocalizer vuforia;
 
@@ -422,7 +421,7 @@ public class Scorpion {
 	}
 
 	//jewel pusher method
-	/*public void pushJewel(String teamColor){
+	public void pushJewel(String teamColor){
 		jewelPusher.setPosition(jewelPusherDownPosition);
 		MRColor.enableLed(false);
 		MRColor.enableLed(true);
@@ -455,8 +454,7 @@ public class Scorpion {
 				turnClockwiseEncoder(1,3);
 			}
 		}
-		waiter(500);
-	}*/
+	}
 
 	//driveTime methods
 	//TODO: consider implementing acceleration and deceleration into the driveTime methods, even though it may be more work than it is worth
@@ -537,37 +535,37 @@ public class Scorpion {
 	}
 
 	//TODO: must change so that it can work in SET_TO_POSTITION mode, maybe one for both modes
-	public void turnAbsolute(int target, double power) {
-		setDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
-		zAccumulated = gyro.getIntegratedZValue();  //Set variables to gyro readings
-
-		while (Math.abs(zAccumulated - target)  >0 )//Continue while the robot direction is further than three degrees from the target
-		{
-			telemetry.addData("heading: ",gyro.getHeading());
-			telemetry.addData("integratedZValue: ",gyro.getIntegratedZValue());
-			telemetry.update();
-			if (zAccumulated > target)//if gyro is positive, turn counterwise
-			{
-				frontLeft.setPower(-power);
-				frontRight.setPower(power);
-				backLeft.setPower(-power);
-				backRight.setPower(power);
-			}
-
-			if (zAccumulated < target)//if gyro is negative, turn clockwise
-			{
-				frontLeft.setPower(power);
-				frontRight.setPower(-power);
-				backLeft.setPower(power);
-				backRight.setPower(-power);
-			}
-			zAccumulated = gyro.getIntegratedZValue();  //Set variables to gyro readings
-			telemetry.addData("accu", String.format("%03d", zAccumulated));
-			telemetry.update();
-		}
-		setToStill();
-	}
-	public int decodePictograph(){
+//	public void turnAbsolute(int target, double power) {
+//		setDriveMotorMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//		zAccumulated = gyro.getIntegratedZValue();  //Set variables to gyro readings
+//
+//		while (Math.abs(zAccumulated - target)  >0 )//Continue while the robot direction is further than three degrees from the target
+//		{
+//			telemetry.addData("heading: ",gyro.getHeading());
+//			telemetry.addData("integratedZValue: ",gyro.getIntegratedZValue());
+//			telemetry.update();
+//			if (zAccumulated > target)//if gyro is positive, turn counterwise
+//			{
+//				frontLeft.setPower(-power);
+//				frontRight.setPower(power);
+//				backLeft.setPower(-power);
+//				backRight.setPower(power);
+//			}
+//
+//			if (zAccumulated < target)//if gyro is negative, turn clockwise
+//			{
+//				frontLeft.setPower(power);
+//				frontRight.setPower(-power);
+//				backLeft.setPower(power);
+//				backRight.setPower(-power);
+//			}
+//			zAccumulated = gyro.getIntegratedZValue();  //Set variables to gyro readings
+//			telemetry.addData("accu", String.format("%03d", zAccumulated));
+//			telemetry.update();
+//		}
+//		setToStill();
+//	}
+	public int decodePictograph(){ //returns a distance value for the robot to travel
 		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 		parameters.vuforiaLicenseKey = "Ac8Q0nb/////AAAAGZRBQQCid0gNt3ydtz8W8gB8MrlkYn+Gu+jvldH+Igx9SypXvRwUWJw/71iF8xhpjKXBDv1UDD+EsjkvvC1+Zko/hF+lZG/TglT50MCsw6/q2MuSc+AUFDqT9lhEJcyroMMp20VPNwj/fUoUAxr5DV4+VUdwwYW/sCML6iL/x0rWEzUGxJf8qvKSrZcI/4X2fWsryCaprTXecsZCTudHQiElph2GCtMva4843D9sx+a6NB9zhPiyn6aaydEs5T4Ygc5o2nK1p6o8G82++XtlDYPkBuVBajLsO6z0Zvk980xIWmgyKjMNZlLofM7lLJdjt5Sh4a1imlIlsAWbQqPvs35MxJLmmrugrO7WXXveK4TY";
