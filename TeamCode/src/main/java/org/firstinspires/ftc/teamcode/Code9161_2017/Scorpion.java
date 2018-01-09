@@ -48,7 +48,7 @@ public class Scorpion {
 	Servo relicGrabber;
 	Servo extender;
 
-	//ColorSensor MRColor;
+	ColorSensor MRColor;
 	GyroSensor gyroSensor;
 	ModernRoboticsI2cGyro gyro;
 	int zAccumulated;
@@ -119,12 +119,12 @@ public class Scorpion {
 		jewelPusher=hardwareMap.servo.get("jewelPusher");
 		extender=hardwareMap.servo.get("extender");
 
-		setTrayToIntake();
+		setTrayToParallel();
 		jewelPusher.setPosition(jewelPusherUpPosition);
 		setGrabberToGrabbed();
 
-		/*MRColor=hardwareMap.colorSensor.get("MR Color Sensor");
-		MRColor.enableLed(true);*/
+		MRColor=hardwareMap.colorSensor.get("MR Color Sensor");
+		MRColor.enableLed(true);
 	}
 
 	public void rightIntake (double power) {
@@ -422,7 +422,7 @@ public class Scorpion {
 	}
 
 	//jewel pusher method
-	/*public void pushJewel(String teamColor){
+	public void pushJewel(String teamColor){
 		jewelPusher.setPosition(jewelPusherDownPosition);
 		MRColor.enableLed(false);
 		MRColor.enableLed(true);
@@ -456,7 +456,7 @@ public class Scorpion {
 			}
 		}
 		waiter(500);
-	}*/
+	}
 
 	//driveTime methods
 	//TODO: consider implementing acceleration and deceleration into the driveTime methods, even though it may be more work than it is worth

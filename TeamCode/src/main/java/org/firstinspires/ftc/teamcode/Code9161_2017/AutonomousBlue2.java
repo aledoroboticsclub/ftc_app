@@ -28,6 +28,7 @@ public class AutonomousBlue2 extends LinearOpMode {
             r.turnCounterwiseEncoder(1,12);
             r.driveForwardEncoder(1,36);
             r.setLiftToPosition0();
+            r.setTrayToPlace();
         }
     }
 }

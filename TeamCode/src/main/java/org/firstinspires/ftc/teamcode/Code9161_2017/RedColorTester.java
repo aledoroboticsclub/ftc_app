@@ -13,6 +13,6 @@ public class RedColorTester extends LinearOpMode{
     public void runOpMode() {
         r.initRobot(hardwareMap, telemetry);
         waitForStart();
-        //r.pushJewel("Red");
+        r.pushJewel("Red");
     }
 }
