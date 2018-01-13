@@ -66,8 +66,8 @@ public class Scorpion {
 	private static final double parallelTrayPosistion=.673;
 	private static final double placementTrayPosition=0.06;
 
-	private static final double jewelPusherDownPosition=.81;
-	private static final double jewelPusherUpPosition=.19;
+	private static final double jewelPusherDownPosition=1;
+	private static final double jewelPusherUpPosition=.32;
 
 	private static final double relicGrabberGrabbedPosition=.6;
 	private static final double relicGrabberReleasePosition=.45;
