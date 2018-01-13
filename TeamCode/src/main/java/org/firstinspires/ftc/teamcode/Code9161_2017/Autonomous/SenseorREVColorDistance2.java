@@ -1,15 +1,16 @@
-package org.firstinspires.ftc.teamcode.Code9161_2017;
+package org.firstinspires.ftc.teamcode.Code9161_2017.Autonomous;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Code9161_2017.Scorpion;
 
 import java.util.Locale;
 

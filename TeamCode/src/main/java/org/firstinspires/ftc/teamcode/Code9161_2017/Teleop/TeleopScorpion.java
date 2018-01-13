@@ -71,7 +71,6 @@ public class TeleopScorpion extends OpMode
 				r.setToStill();
 		}
 
-
 		//tray
 		if(gamepad2.a)
 			r.setTrayToIntake();
