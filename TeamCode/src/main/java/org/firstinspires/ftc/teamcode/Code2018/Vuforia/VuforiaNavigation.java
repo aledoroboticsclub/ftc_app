@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Code9161_2017;
+package org.firstinspires.ftc.teamcode.Code2018.Vuforia;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -21,12 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Autonomous(name="Vuforia Navigation", group ="Concept")
+@Disabled
 public class VuforiaNavigation extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
-
     OpenGLMatrix lastLocation = null;
-
     VuforiaLocalizer vuforia;
 
     @Override public void runOpMode() {

@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.Code9161_2017;
+package org.firstinspires.ftc.teamcode.Code2018.Teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -23,7 +23,8 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 
 @TeleOp(name="ServoTester", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
-//@Disabled     //Determines if the program shows up on Driver Station
+//@Disabled
+   //Determines if the program shows up on Driver Station
 
 
 public class ServoTester extends OpMode
@@ -32,10 +33,18 @@ public class ServoTester extends OpMode
 	double trayPosition=.943;
 
 	Servo jewelPusher;
-	double jewelPosition=.19;
+	double jewelPosition=.32;
 
 	Servo relicServo;
 	double relicPosition=.69;
+	
+	Servo phoneServo;
+	double phonePosition=.91;
+	
+	Servo intakeLockRight;
+	Servo intakeLockLeft;
+	double intakeLockRPosition;
+	double intakeLockLPosition;
 
 	//ColorSensor MRColor;
 
@@ -47,6 +56,7 @@ public class ServoTester extends OpMode
 		trayServo=hardwareMap.servo.get("trayServo");
 		jewelPusher=hardwareMap.servo.get("jewelPusher");
 		relicServo=hardwareMap.servo.get("relicServo");
+		phoneServo=hardwareMap.servo.get("phoneServo");
 		lift1=hardwareMap.dcMotor.get("lift1");
 		lift2=hardwareMap.dcMotor.get("lift2");
 		lift1.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -56,8 +66,8 @@ public class ServoTester extends OpMode
         lift2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		lift1.setPower(1);
 		lift2.setPower(1);
-		/*MRColor=hardwareMap.colorSensor.get("MR Color Sensor");
-		MRColor.enableLed(true);*/
+		//MRColor= hardwareMap.colorSensor.get("Color");
+		//MRColor.enableLed(true);
 	}
 
 	public void initLoop(){}
@@ -88,8 +98,8 @@ public class ServoTester extends OpMode
      	jewelPusher.setPosition(jewelPosition);
 		telemetry.addData("JewelPusher Servo Position", jewelPosition);
 
-		/*telemetry.addData("Red: ", MRColor.red());
-		telemetry.addData("Blue: ", MRColor.blue());*/
+		//telemetry.addData("Red: ", MRColor.red());
+		//telemetry.addData("Blue: ", MRColor.blue());
 
 		relicPosition+=gamepad1.dpad_down?.01:0;
 		relicPosition-=gamepad1.dpad_up?.01:0;
@@ -97,5 +107,26 @@ public class ServoTester extends OpMode
 		relicPosition=relicPosition<-1?-1:relicPosition;
 		relicServo.setPosition(relicPosition);
 		telemetry.addData("relic Servo Position", relicPosition);
+
+		phonePosition+=gamepad1.dpad_left?.01:0;
+		phonePosition-=gamepad1.dpad_right?.01:0;
+		phonePosition=phonePosition>1?1:phonePosition;
+		phonePosition=phonePosition<-1?-1:phonePosition;
+		phoneServo.setPosition(phonePosition);
+		telemetry.addData("phone Servo Position", phonePosition);
+
+		intakeLockRPosition+=gamepad1.dpad_down?.01:0;
+		intakeLockRPosition-=gamepad1.dpad_up?.01:0;
+		intakeLockRPosition=intakeLockRPosition>1?1:intakeLockRPosition;
+		intakeLockRPosition=intakeLockRPosition<-1?-1:intakeLockRPosition;
+		intakeLockRight.setPosition(intakeLockRPosition);
+		telemetry.addData("intakeLockR Servo Position", intakeLockRPosition);
+
+		phonePosition+=gamepad1.dpad_left?.01:0;
+		phonePosition-=gamepad1.dpad_right?.01:0;
+		phonePosition=phonePosition>1?1:phonePosition;
+		phonePosition=phonePosition<-1?-1:phonePosition;
+		phoneServo.setPosition(phonePosition);
+		telemetry.addData("phone Servo Position", phonePosition);
 	}
 }
